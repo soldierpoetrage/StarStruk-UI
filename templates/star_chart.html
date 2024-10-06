@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exoplanet Sky Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000; /* Dark background like space */
+            color: #fff; /* White text */
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .chart {
+            position: relative;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #000; /* Black outline */
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Starstruk: Exoplanet Sky Viewer</h1>
+        <div class="chart">
+            <canvas id="star-chart" width="800" height="800"></canvas>
+        </div>
+        <button id="export-png">Export as PNG</button>
+        <button id="export-pdf">Export as PDF</button>
+    </div>
+
+    <script>
+        // Simulate the stars array if dynamically loaded
+        const stars = {{ stars | tojson }}; // Correctly serialize stars data to JSON from Flask
+
+        const canvas = document.getElementById("star-chart");
+        const ctx = canvas.getContext("2d");
+
+        // Function to draw the star chart
+        function drawStarChart() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+
+            // Draw dark blue background circle
+            ctx.fillStyle = 'rgba(0, 0, 139, 1)'; // Dark blue color
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
+            ctx.fill(); // Fill the circle
+
+            // Draw the black outline
+            ctx.strokeStyle = 'black'; // Black outline
+            ctx.lineWidth = 10; // Increased thickness for visibility
+            ctx.stroke(); // Stroke the outline
+
+            stars.forEach(star => {
+                // Convert RA and Dec to canvas coordinates
+                const x = ((star.ra / 360) * canvas.width); // Adjust RA
+                const y = ((90 - star.dec) / 180) * canvas.height; // Adjust Dec, inverting the Y-axis
+
+                // Draw the star with brightness adjustment
+                const brightness = star.phot_g_mean_mag; // Use magnitude for brightness
+                const radius = Math.max(3, 6 - brightness); // Increase star size for visibility
+
+                // Draw the star
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = "white";
+                ctx.fill();
+            });
+        }
+
+        // Export the chart as PNG
+        document.getElementById("export-png").addEventListener("click", function() {
+            const link = document.createElement('a');
+            link.download = 'star_chart.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+
+        // Export the chart as PDF
+        document.getElementById("export-pdf").addEventListener("click", function() {
+            const pdf = new jsPDF();
+            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 200, 200);
+            pdf.save('star_chart.pdf');
+        });
+
+        // Initial render
+        drawStarChart();
+    </script>
+
+    <!-- Include jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</body>
+</html>

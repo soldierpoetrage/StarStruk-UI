@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exoplanet Sky Viewer</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif; /* Kid-friendly font */
+            background-color: #1c067b; /* Dark space-like background */
+            color: #fff; /* White text */
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            height: 100vh; /* Full-screen height */
+            justify-content: center; /* Center content vertically */
+        }
+        h1 {
+            font-size: 3em; /* Larger title for fun */
+            color: #ffcc00; /* Bright yellow for attention */
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        label {
+            font-size: 1.5em; /* Bigger font for the label */
+            margin-bottom: 10px; /* Add space below label */
+        }
+        select {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            border: none;
+            background-color: #00aaff; /* Bright blue background */
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px; /* Space between dropdown and button */
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            border: none;
+            background-color: #ff5733; /* Fun orange button */
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        select:hover {
+            background-color: #0077cc; /* Darker blue on hover for select */
+        }
+        input[type="submit"]:hover {
+            background-color: #c44221; /* Darker orange on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Starstruk!</h1>
+        <form action="/explore" method="post">
+            <label for="planet_select">Pick a planet to see its stars!</label>
+            <select name="planet_select" id="planet_select">
+                {% for planet in planet_names %}
+                <option value="{{ planet }}">{{ planet }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Let’s Go!">
+        </form>
+    </div>
+</body>
+</html>
